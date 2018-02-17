@@ -3,37 +3,39 @@
         tesseract = null;
 
     let vueTesseract = {
-        beforeDestroy() {
-
-        },
         created() {
             if (!vue) {
                 console.warn('tesseract-vue not installed!');
                 return;
             }
 
-            function fetchSession(db = databases[defaultDB]) {
-
-            }
+            let defineReactive = vue.util.defineReactive,
+                vm = this;
 
             let $tesseract = {
                 version: '__VERSION__',
-                create() {
-                    return tesseract.create({
-                        workerPath: '/path/to/worker.js',
-                        langPath: 'https://cdn.rawgit.com/naptha/tessdata/gh-pages/3.02/',
-                        corePath: 'https://cdn.rawgit.com/naptha/tesseract.js-core/0.1.0/index.js',
-                    });
+                create(paths = {}) {
+                    return tesseract.create(paths);
                 },
 
                 recognize(image) {
-                    return Tesseract.recognize(image);
+                    return tesseract.recognize(image, options = {});
+                },
+
+                detect(image) {
+                    return tesseract.detect(image);
+                },
+
+                optimize(image) {
+                    if (optimizer && typeof optimizer === 'function') {
+                        return tesseract.bind(optimizer(image));
+                    }
+
+                    return tesseract;
                 },
             };
 
             defineReactive(vm, '$tesseract', $tesseract);
-
-            vm.$test = 'cat'; // Add non-reactive property
         },
     };
 
@@ -46,12 +48,8 @@
         install: (Vue, options) => {
             vue = Vue;
             tesseract = (options && options.tesseract) || Tesseract;
+            optimizer = options && options.optimizer;
             myFunction();
-
-            /* if (options.debug) {
-                pouch.debug.enable(options.debug);
-            } */
-
             Vue.options = Vue.util.mergeOptions(Vue.options, vueTesseract);
         },
     };
