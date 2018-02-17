@@ -1,6 +1,7 @@
 (function() {
     let vue = null,
-        tesseract = null;
+        tesseract = null,
+        optimizer = null;
 
     let vueTesseract = {
         created() {
