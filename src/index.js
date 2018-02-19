@@ -29,7 +29,7 @@
 
                 preOptimize(image, preOptimizer) {
                     if (preOptimizer && typeof preOptimizer === 'function') {
-                        return optimizerFunction(image);
+                        return preOptimizer(image);
                     }
 
                     return false;
