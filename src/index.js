@@ -19,20 +19,20 @@
                     return tesseract.create(paths);
                 },
 
-                recognize(image) {
-                    return tesseract.recognize(image, options = {});
+                recognize(image, options = {}) {
+                    return tesseract.recognize(image, options);
                 },
 
                 detect(image) {
                     return tesseract.detect(image);
                 },
 
-                optimize(image) {
-                    if (optimizer && typeof optimizer === 'function') {
-                        return tesseract.bind(optimizer(image));
+                preOptimize(image, preOptimizer) {
+                    if (preOptimizer && typeof preOptimizer === 'function') {
+                        return optimizerFunction(image);
                     }
 
-                    return tesseract;
+                    return false;
                 },
             };
 
@@ -40,17 +40,11 @@
         },
     };
 
-    function myFunction() {
-
-    }
-
     let api = {
         mixin: vueTesseract,
         install: (Vue, options) => {
             vue = Vue;
             tesseract = (options && options.tesseract) || Tesseract;
-            optimizer = options && options.optimizer;
-            myFunction();
             Vue.options = Vue.util.mergeOptions(Vue.options, vueTesseract);
         },
     };
